@@ -93,11 +93,7 @@ def join_team_route():
 # =================================================================
 # 🛑 FIX 5: BotConnection Class Definition (Removed invalid syntax)
 # =================================================================
-# Assuming the rest of your class methods are correct, this fixes the syntax error.
 class BotConnection:
-    # We remove the problematic __init__ placeholder if it wasn't correct.
-    # The run method likely exists in your original code.
-    
     # Placeholder for the run method (required if MainBot uses it)
     async def run(self):
         print("BotConnection.run() placeholder running.")
@@ -118,6 +114,7 @@ async def main():
     # ... (Your existing startup and variable setting code remains) ...
 
     # --- Your original async tasks ---
+    # Assuming Target, Pw, key, iv, AutHToKen, acc_name, OnLineiP, OnLineporT are defined elsewhere in the bot code
     task1 = asyncio.create_task(MainBot(Target, Pw, key, iv, AutHToKen, acc_name)) 
     await asyncio.sleep(1)
     task2 = asyncio.create_task(TcPOnLine(OnLineiP , OnLineporT , key , iv , AutHToKen))
@@ -139,8 +136,10 @@ async def main():
     print("FIX_VERSION: Chat logic is now running a debug print check.") 
     print(render('WINTER', colors=['white', 'green'], align='center'))
     print('')
-    print(f" - BoT STarTinG And OnLine on TarGeT : {TarGeT} | BOT NAME : {acc_name}\\n")
-    print(f" - BoT sTaTus > GooD | OnLinE ! (:\")
+    # The \n at the end of the f-string is handled by Python, but we need to ensure the quotes are safe.
+    print(f" - BoT STarTinG And OnLine on TarGeT : {TarGeT} | BOT NAME : {acc_name}\n")
+    # 🛑 FIX APPLIED HERE: Changed outer quotes from " to ' to fix the SyntaxError caused by the internal "
+    print(f' - BoT sTaTus > GooD | OnLinE ! (:")') 
     print(f" - Web UI and API started on port {port}")
     print(f" - API Example: POST to /join with form data.")
     print(f" - Subscribe > Spideerio | Gaming ! (:\")    
