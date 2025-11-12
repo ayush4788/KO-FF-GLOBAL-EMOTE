@@ -791,7 +791,7 @@ async def MaiiiinE():
     # --- IMPORTANT: Set the global event loop for Flask to use ---
     LOOP = asyncio.get_running_loop()
     
-    Uid , Pw = '4260656397' , 'C4BB2682F8D27B593A5BE43E584432D0F936C8DB588B15FAB66E2B2DAF2C7ABD'
+    Uid , Pw = '4166940170' , '3226C82DDBB0767A765E9599C7D838B63F14F67D18FD75096D16C2572722A208'
     
     open_id , access_token = await GeNeRaTeAccEss(Uid , Pw)
     if not open_id or not access_token: print("ErroR - InvaLid AccounT") ; return None
