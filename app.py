@@ -3,34 +3,22 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import os
-import requests 
+import requests # Use requests to call your bot API
 
 app = Flask(__name__)
 
-# =================================================================
-# 🛑 CRITICAL: REPLACE THIS WITH YOUR REAL RAILWAY PUBLIC URL
-# IMPORTANT: Removed the port variable and concatenation. 
-# Railway exposes the app directly on the domain (e.g., port 443/80).
-# =================================================================
-BOT_API_BASE_URL = "http://your-bot-project-name.up.railway.app" # <--- IMPORTANT: Change this!
-# We no longer need BOT_API_PORT, as the base URL should handle it.
+# This is the public URL of your bot running on Railway/Render
+BOT_API_BASE_URL = "https://your-bot-project-name.up.railway.app" # <--- IMPORTANT: Change this!
+BOT_API_PORT = "30151" # The port your bot's Flask app is running on
 
 @app.route('/')
 def index():
     try:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, 'emotes.json')
-        
-        with open(file_path, 'r') as f:
+        with open('emotes.json', 'r') as f:
             emotes = json.load(f)
-        
-        # Assumes you have an 'index.html' file in a 'templates' folder
-        return render_template('index.html', emotes=emotes) 
-    except FileNotFoundError:
-        return jsonify({'message': 'Error: emotes.json or index.html not found on Vercel.'}), 500
+        return render_template('index.html', emotes=emotes)
     except Exception as e:
         return f"An error occurred: {e}", 500
-
 
 @app.route('/send_emote', methods=['POST'])
 def send_emote():
@@ -40,47 +28,29 @@ def send_emote():
         emote_id = data.get('emote_id')
         uids = data.get('uids', [])
 
-        # ... (Validation logic) ...
-        missing_fields = []
-        if not team_code: missing_fields.append("team_code")
-        if not emote_id: missing_fields.append("emote_id")
-        if not uids or not isinstance(uids, list) or len(uids) == 0: missing_fields.append("uids (must be a non-empty list)")
-
-        if missing_fields:
-            return jsonify({'message': 'Error: Missing required data fields.', 'missing': missing_fields}), 400
+        if not all([team_code, emote_id, uids]):
+            return jsonify({'message': 'Error: Missing data'}), 400
 
         # Build the parameters for the API call to your bot
+        # http://.../join?uid1=...&uid2=...&emote_id=...&tc=...
         params = {
             'emote_id': emote_id,
             'tc': team_code
         }
-        for i, uid in enumerate(uids[:4]):
+        for i, uid in enumerate(uids):
             params[f'uid{i+1}'] = uid
 
-        # FIX: Removed explicit port number in the URL concatenation
-        api_url = f"{BOT_API_BASE_URL}/join"
-        
-        # FIX: Using POST method to match the bot's route
-        response = requests.post(api_url, data=params, timeout=45) 
-        
-        response.raise_for_status() 
-
-        api_response_content = response.text if response.text else "Bot API returned empty content (Success, but No Content)."
+        # Make the request to the bot running on Railway
+        api_url = f"{BOT_API_BASE_URL}:{BOT_API_PORT}/join"
+        response = requests.get(api_url, params=params, timeout=30)
+        response.raise_for_status() # Raise an error for bad responses
 
         return jsonify({
             'message': 'Emote request sent successfully to the bot!',
-            'api_response': api_response_content
-        }), 200
+            'api_response': response.json()
+        })
 
     except requests.exceptions.RequestException as e:
-        status_code = getattr(e.response, 'status_code', 503)
-        return jsonify({
-            'message': 'Error communicating with the external Bot API (Check if bot is running).',
-            'error_details': str(e),
-            'api_status_code': status_code
-        }), status_code 
-
+        return jsonify({'message': f'Error communicating with the bot API: {e}'}), 500
     except Exception as e:
-        return jsonify({'message': f'An unexpected error occurred on Vercel: {e}'}), 500
-
-# --- END OF FILE app.py ---
+        return jsonify({'message': f'An internal server error occurred: {e}'}), 500
