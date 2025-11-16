@@ -500,7 +500,7 @@ async def MaiiiinE():
     global LOOP, key, iv, region, whisper_writer, online_writer, LoGinDaTaUncRypTinG
     LOOP = asyncio.get_running_loop()
 
-    Uid, Pw = '4292341778', '2F182645A263DACD78142DCC3458F984AA0B4FC78DC9BD3698AFAA9E3A41B315'
+    Uid, Pw = '4260656397', 'C4BB2682F8D27B593A5BE43E584432D0F936C8DB588B15FAB66E2B2DAF2C7ABD'
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
     if not open_id or not access_token: print("Invalid account"); return None
     PyL = await EncRypTMajoRLoGin(open_id, access_token)
