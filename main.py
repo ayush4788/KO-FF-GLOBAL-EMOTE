@@ -285,7 +285,7 @@ async def TcPOnLine(ip, port, key, iv, AutHToKen, reconnect_delay=0.5):
                         OwNer_UiD, CHaT_CoDe, SQuAD_CoDe = await GeTSQDaTa(packet)
                         JoinCHaT = await AutH_Chat(3, OwNer_UiD, CHaT_CoDe, key, iv)
                         await SEndPacKeT(whisper_writer, online_writer, 'ChaT', JoinCHaT)
-                        message = f'[B][C]{get_random_color()}\n- WeLComE To DECIMAL CHEATS Emote Bot ! '
+                        message = f'[B][C]{get_random_color()}\n- WeLComE To KO FF Emote Bot ! '
                         P = await SEndMsG(0, message, OwNer_UiD, OwNer_UiD, key, iv)
                         await SEndPacKeT(whisper_writer, online_writer, 'ChaT', P)
                     except:
